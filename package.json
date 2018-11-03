@@ -1,0 +1,27 @@
+{
+  "name": "typed-stylings-webpack-plugin",
+  "version": "0.1.1",
+  "description": "Create TypeScript definitions for style files",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baronbaston/fork-ts-checker-typed-stylings-webpack-plugin.git"
+  },
+  "keywords": [
+    "webpack",
+    "typed-css-modules",
+    "css-modules"
+  ],
+  "author": "Christian Ridmark <c.ridmark@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/baronbaston/fork-ts-checker-typed-stylings-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/baronbaston/fork-ts-checker-typed-stylings-webpack-plugin#readme",
+  "peerDependencies": {
+    "node-sass": "4.9.4"
+  },
+  "dependencies": {
+    "typed-css-modules": "0.3.7"
+  }
+}
