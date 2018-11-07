@@ -41,7 +41,7 @@ export class SassPreprocessor implements Preprocessor {
   }
 
   static isSupported() {
-    return renderSync !== undefined
+    return renderSync !== null
   }
 
 }
