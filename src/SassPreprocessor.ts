@@ -14,7 +14,11 @@ const renderSync = (() => {
 export class SassPreprocessor implements Preprocessor {
   private _sassRegex = /\.(?:scss|sass)$/
 
-  constructor(private paths: string[], private nodeModulesPath: string) {}
+  private paths: string[];
+
+  constructor(paths: string[], private nodeModulesPath: string) {
+    this.paths = paths.concat();
+  }
 
   test(file: string): boolean {
     return this._sassRegex.test(file)
@@ -23,7 +27,7 @@ export class SassPreprocessor implements Preprocessor {
   readSync(file: string): string {
     const renderedContent = renderSync!({
     file: file,
-    includePaths: this.paths.concat(),
+    includePaths: this.paths,
     indentedSyntax: true,
     importer: [(includeUrl: string, fileUrl: string): { file: string } => {
       const path = this.resolvePath(includeUrl, fileUrl)
