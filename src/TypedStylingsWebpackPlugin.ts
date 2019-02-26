@@ -11,6 +11,7 @@ export interface Options {
   nodeModulesPath?: string
   preProcessors: Preprocessor[]
   dtsOptions: object
+  cleanup: boolean
 }
 
 export class TypedStylingsWebpackPlugin {
@@ -21,6 +22,7 @@ export class TypedStylingsWebpackPlugin {
   private dtsOptions: object
   private dtsCreator: DtsCreator
   private timestampCache: { [key: string]: number }
+  private cleanup: boolean
 
   constructor(options: Options) {
     this.asyncHook = options.asyncHook
@@ -35,9 +37,13 @@ export class TypedStylingsWebpackPlugin {
     this.dtsOptions = options.dtsOptions || {camelCase: true}
     this.dtsCreator = new DtsCreator(this.dtsOptions)
     this.timestampCache = {}
+    this.cleanup = options.cleanup === true
   }
 
   apply(compiler: any) {
+    if (this.cleanup) {
+      this.cleanupFiles();
+    }
     compiler.hooks[this.asyncHook].tapPromise('TypedStylingsWebpackPlugin', () => {
       const results = this.includePaths
         .reduce((result, path) => result.concat(this.getModifiedFiles(path)), [] as string[])
@@ -48,6 +54,23 @@ export class TypedStylingsWebpackPlugin {
         )
       return Promise.all(results)
     })
+  }
+
+  private cleanupFiles() {
+    const start = Date.now();
+    this.includePaths
+      .map(dir => this.walkSync(dir))
+      .forEach(files => files
+          .filter(file => this.preProcessors.some(preProcessor => preProcessor.test(file.path)))
+          .forEach(file => {
+            try {
+              fs.unlinkSync(`${file.path}.d.ts`)
+            } catch(e) {
+              // ignore error
+            }
+          })
+      )
+    console.log('cleaned up files in', Date.now() - start)
   }
 
   private getModifiedFiles(dir: string): string[] {

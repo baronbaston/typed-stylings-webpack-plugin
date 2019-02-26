@@ -47,6 +47,8 @@ plugins: [
   Array of preprocessor instances. By default `SassPreprocessor` and `CssPreprocessor` are included. See _Preprocessors_ for more info.
 - **dtsOptions** `object`:
   See [typed-css-modules](https://github.com/Quramy/typed-css-modules)
+- **cleanup** `boolean`:
+  If true any .scss.d.ts included in _includePaths_ will be removed when plugin is executed the first time.
 
 ## Preprocessor
 

@@ -5,6 +5,7 @@ export interface Options {
     nodeModulesPath?: string;
     preProcessors: Preprocessor[];
     dtsOptions: object;
+    cleanup: boolean;
 }
 export declare class TypedStylingsWebpackPlugin {
     private asyncHook;
@@ -14,8 +15,10 @@ export declare class TypedStylingsWebpackPlugin {
     private dtsOptions;
     private dtsCreator;
     private timestampCache;
+    private cleanup;
     constructor(options: Options);
     apply(compiler: any): void;
+    private cleanupFiles;
     private getModifiedFiles;
     private walkSync;
     private getFileContentAsCss;
