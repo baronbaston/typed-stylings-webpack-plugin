@@ -18,7 +18,7 @@ export declare class TypedStylingsWebpackPlugin {
     private cleanup;
     constructor(options: Options);
     apply(compiler: any): void;
-    private cleanupFiles;
+    private cleanupTypings;
     private getModifiedFiles;
     private walkSync;
     private getFileContentAsCss;

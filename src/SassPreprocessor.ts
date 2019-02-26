@@ -12,7 +12,8 @@ const renderSync = (() => {
 })()
 
 export class SassPreprocessor implements Preprocessor {
-  private _sassRegex = /\.(?:scss|sass)$/
+  private sassRegex = /\.(?:scss|sass)$/
+  private sassTypingRegex = /\.(?:scss|sass).d.ts$/
 
   private paths: string[];
 
@@ -21,19 +22,24 @@ export class SassPreprocessor implements Preprocessor {
   }
 
   test(file: string): boolean {
-    return this._sassRegex.test(file)
+    return this.sassRegex.test(file)
+  }
+
+  testTyping(file: string): boolean {
+    return this.sassTypingRegex.test(file)
   }
 
   readSync(file: string): string {
     const renderedContent = renderSync!({
-    file: file,
-    includePaths: this.paths,
-    indentedSyntax: true,
-    importer: [(includeUrl: string, fileUrl: string): { file: string } => {
-      const path = this.resolvePath(includeUrl, fileUrl)
-      this.paths.push(fileUrl)
-      return {file: path}
-    }]})
+      file: file,
+      includePaths: this.paths,
+      indentedSyntax: true,
+      importer: [(includeUrl: string, fileUrl: string): { file: string } => {
+        const path = this.resolvePath(includeUrl, fileUrl)
+        this.paths.push(fileUrl)
+        return {file: path}
+      }]
+    })
     return renderedContent.css.toString('utf-8')
   }
 

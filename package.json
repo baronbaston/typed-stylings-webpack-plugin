@@ -1,6 +1,6 @@
 {
   "name": "typed-stylings-webpack-plugin",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "Create TypeScript definitions for style files",
   "main": "lib/index.js",
   "typings": "./lib/index.d.ts",

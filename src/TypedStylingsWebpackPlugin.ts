@@ -42,7 +42,7 @@ export class TypedStylingsWebpackPlugin {
 
   apply(compiler: any) {
     if (this.cleanup) {
-      this.cleanupFiles();
+      this.cleanupTypings();
     }
     compiler.hooks[this.asyncHook].tapPromise('TypedStylingsWebpackPlugin', () => {
       const results = this.includePaths
@@ -56,21 +56,15 @@ export class TypedStylingsWebpackPlugin {
     })
   }
 
-  private cleanupFiles() {
-    const start = Date.now();
+  private cleanupTypings() {
+    const sliceLength = '.d.ts'.length;
     this.includePaths
       .map(dir => this.walkSync(dir))
-      .forEach(files => files
-          .filter(file => this.preProcessors.some(preProcessor => preProcessor.test(file.path)))
-          .forEach(file => {
-            try {
-              fs.unlinkSync(`${file.path}.d.ts`)
-            } catch(e) {
-              // ignore error
-            }
-          })
-      )
-    console.log('cleaned up files in', Date.now() - start)
+      .reduce((result, dirFiles) => result.concat(dirFiles), [])
+      .filter(file => this.preProcessors.some(preProcessor => preProcessor.testTyping(file.path) && !fs.existsSync(file.path.slice(0, file.path.length - sliceLength))))
+      .forEach(file => {
+        fs.unlinkSync(`${file.path}`)
+      })
   }
 
   private getModifiedFiles(dir: string): string[] {
