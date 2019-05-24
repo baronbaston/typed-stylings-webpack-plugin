@@ -9,6 +9,7 @@ export interface Options {
   asyncHook: string
   includePaths: string | string[]
   nodeModulesPath?: string
+  exclude?: RegExp
   preProcessors: Preprocessor[]
   dtsOptions: object
   cleanup: boolean
@@ -18,6 +19,7 @@ export class TypedStylingsWebpackPlugin {
   private asyncHook: string
   private includePaths: string[]
   private nodeModulesPath: string
+  private exclude: RegExp | undefined
   private preProcessors: Preprocessor[]
   private dtsOptions: object
   private dtsCreator: DtsCreator
@@ -28,6 +30,7 @@ export class TypedStylingsWebpackPlugin {
     this.asyncHook = options.asyncHook
     this.includePaths = Array.isArray(options.includePaths) ? options.includePaths : [options.includePaths]
     this.nodeModulesPath = options.nodeModulesPath || 'node_modules'
+    this.exclude = options.exclude
     this.preProcessors = options.preProcessors
       ? options.preProcessors
       : [
@@ -48,9 +51,14 @@ export class TypedStylingsWebpackPlugin {
       const results = this.includePaths
         .reduce((result, path) => result.concat(this.getModifiedFiles(path)), [] as string[])
         .map(path => ({path, css: this.getFileContentAsCss(path)}))
-        .filter(pathAndCss => pathAndCss.css)
+        .filter(pathAndCss => {
+          if (this.exclude) {
+            return !this.exclude.test(pathAndCss.path) && pathAndCss.css
+          }
+          return pathAndCss.css
+        })
         .map(pathAndCss =>
-          this.dtsCreator.create(pathAndCss.path, pathAndCss.css!!).then((content: any) => content.writeFile())
+          this.dtsCreator.create(pathAndCss.path, pathAndCss.css!).then((content: any) => content.writeFile())
         )
       return Promise.all(results)
     })
