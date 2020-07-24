@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/baronbaston/fork-ts-checker-typed-stylings-webpack-plugin#readme",
   "dependencies": {
-    "typed-css-modules": "0.3.7"
+    "typed-css-modules": "0.6.4"
   },
   "devDependencies": {
     "@types/node": "^10.12.2",
